@@ -27,4 +27,13 @@ export class AppService {
       throw new RpcException(err.message);
     }
   }
+
+  getCategories(_id: string): Promise<Category[]> {
+    try {
+      return this.categoryModel.find({ _id });
+    } catch (err) {
+      this.logger.error(`error: ${JSON.stringify(err)}`);
+      throw new RpcException(err.message);
+    }
+  }
 }
