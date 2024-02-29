@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Category } from './interfaces/categories/category.interface';
 import { Model } from 'mongoose';
@@ -30,7 +30,33 @@ export class AppService {
 
   getCategories(_id: string): Promise<Category[]> {
     try {
-      return this.categoryModel.find({ _id });
+      return _id ? this.categoryModel.find({ _id }) : this.categoryModel.find();
+    } catch (err) {
+      this.logger.error(`error: ${JSON.stringify(err)}`);
+      throw new RpcException(err.message);
+    }
+  }
+
+  getCategorieByName(name: string): Promise<Category> {
+    try {
+      return this.categoryModel.findOne({ name });
+    } catch (err) {
+      this.logger.error(`error: ${JSON.stringify(err)}`);
+      throw new RpcException(err.message);
+    }
+  }
+
+  async updateCategory(name: string, category: Category): Promise<Category> {
+    try {
+      const result = await this.categoryModel.findOneAndUpdate(
+        { name },
+        category,
+        { new: true },
+      );
+
+      if (!result) throw new NotFoundException(`Category ${name} not found.`);
+
+      return result;
     } catch (err) {
       this.logger.error(`error: ${JSON.stringify(err)}`);
       throw new RpcException(err.message);
