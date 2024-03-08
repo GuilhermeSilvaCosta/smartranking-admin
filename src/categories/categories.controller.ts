@@ -1,13 +1,13 @@
 import { Controller, Logger } from '@nestjs/common';
-import { AppService } from './app.service';
+import { CategoriesService } from './categories.service';
+import { Category } from './interfaces/category.interface';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { Category } from './interfaces/categories/category.interface';
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class CategoriesController {
+  constructor(private readonly categoriesService: CategoriesService) {}
 
-  private readonly logger = new Logger(AppController.name);
+  private readonly logger = new Logger(CategoriesController.name);
 
   @EventPattern('create-category')
   async createCategory(
@@ -15,7 +15,7 @@ export class AppController {
     // @Ctx() context: RmqContext,
   ) {
     this.logger.log(`category: ${JSON.stringify(category)}`);
-    await this.appService.createCategory(category);
+    await this.categoriesService.createCategory(category);
 
     /* Apenas caso noAck = true
     const channel = context.getChannelRef();
@@ -29,15 +29,15 @@ export class AppController {
   }
 
   @MessagePattern('get-categories')
-  getCategories(@Payload() _id: string): Promise<Category[]> {
+  getCategories(@Payload() _id: string) {
     this.logger.log(`_id: ${_id}`);
-    return this.appService.getCategories(_id);
+    return this.categoriesService.getCategories(_id);
   }
 
   @MessagePattern('get-categorie-by-name')
   getCategorieByName(@Payload() name: string): Promise<Category> {
     this.logger.log(`name: ${name}`);
-    return this.appService.getCategorieByName(name);
+    return this.categoriesService.getCategorieByName(name);
   }
 
   @MessagePattern('put-categories')
@@ -46,6 +46,6 @@ export class AppController {
     const category: Category = data.category;
     this.logger.log(`name: ${name}`);
 
-    return this.appService.updateCategory(name, category);
+    return this.categoriesService.updateCategory(name, category);
   }
 }
