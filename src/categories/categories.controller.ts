@@ -3,7 +3,7 @@ import { CategoriesService } from './categories.service';
 import { Category } from './interfaces/category.interface';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 
-@Controller()
+@Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
