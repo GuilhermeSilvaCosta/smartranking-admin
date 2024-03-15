@@ -8,6 +8,7 @@ export const PlayerSchema = new mongoose.Schema(
     ranking: String,
     positionRanking: Number,
     avatar: String,
+    category: String,
   },
   { timestamps: true, collection: 'players' },
 );

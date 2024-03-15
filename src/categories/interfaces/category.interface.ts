@@ -1,11 +1,10 @@
 import { Document } from 'mongoose';
-import { Player } from '../../players/interfaces/player.interface';
 
 export interface Category extends Document {
+  readonly _id?: string;
   readonly name: string;
   description: string;
   events: Array<Event>;
-  players?: Array<Player>;
 }
 
 export interface Event {
